@@ -1,0 +1,13 @@
+{
+  "name":"intro_to_npm",
+  "version":"0.0.0",
+  "description":"npm introduction",
+  "main":"app.js",
+  "dependencies":{
+    "consolidate":"~0.9.1",
+    "express":"~3.2.6",
+    "mongodb":"~2.2.19"
+  },
+  "author":"Manuel Fontan",
+  "license":"Apache-2.0"
+}

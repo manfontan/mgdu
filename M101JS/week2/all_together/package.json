@@ -1,0 +1,14 @@
+{
+  "name":"all_together_now",
+  "version":"0.1.0",
+  "description":"Using the MOngoDB driver together with route handling templates",
+  "main":"app.js",
+  "dependencies":{
+    "consolidate":"~0.13.1",
+    "express":"~4.13.3",
+    "mongodb":"~2.2.19",
+    "nunjucks": "~2.4.3"
+  },
+  "author":"Manuel Fontan",
+  "license":"Apache-2.0"
+}
