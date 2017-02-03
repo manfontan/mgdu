@@ -1,0 +1,31 @@
+//mine
+db.companies.aggregate([
+  {$match: {founded_year:2004}},
+  {$unwind: {path:"$funding_rounds"}},
+  {$project: {_id:1,name:1,founded_year:1,"funding_rounds.raised_amount":1}},
+  {$group: {
+    "_id":{id:"$_id",name:"$name"},
+    "count":{$sum: 1},
+    "raised_avg":{$avg:"$funding_rounds.raised_amount"},
+  }},
+  {$match: {"count":{$gte:5}}},
+  {$sort: {"raised_avg":1}},
+  {$limit: 1}
+   ])
+
+//given solution
+   db.companies.aggregate([
+    { $match: { founded_year: 2004 } },
+    { $project: {
+        _id: 0,
+        name: 1,
+        funding_rounds: 1,
+        num_rounds: { $size: "$funding_rounds" }
+    } },
+    { $match: { num_rounds: { $gte: 5 } } },
+    { $project: {
+        name: 1,
+        avg_round: { $avg: "$funding_rounds.raised_amount" }
+    } },
+    { $sort: { avg_round: 1 } }
+]).pretty()

@@ -52,12 +52,37 @@ function ItemDAO(database) {
         *
         */
 
+        this.db.collection('item').aggregate(
+                    [
+                        { $group: {
+                                _id: "$category",
+                                num: { $sum: 1 },
+                            } },
+                            { $sort: { _id: 1 }
+                          }
+                    ]
+                ).toArray(function(err, result) {
+                    assert.equal(err, null);
+                    var totalItems=0;
+                    //Count total number of items
+                    for(var i=0,len = result.length;i<len;i++){
+                      totalItems = totalItems + result[i].num;
+                    }
+
+                    var category = {
+                                _id: "All",
+                                num: totalItems
+                            };
+                    result.push(category)
+                    callback(result);
+                });
+
+        /**
         var categories = [];
         var category = {
             _id: "All",
             num: 9999
         };
-
         categories.push(category)
 
         // TODO-lab1A Replace all code above (in this method).
@@ -66,6 +91,8 @@ function ItemDAO(database) {
         // place within your code to pass the categories array to the
         // callback.
         callback(categories);
+
+        **/
     }
 
 
@@ -93,19 +120,47 @@ function ItemDAO(database) {
          * than you do for other categories.
          *
          */
-
-        var pageItem = this.createDummyItem();
-        var pageItems = [];
-        for (var i=0; i<5; i++) {
-            pageItems.push(pageItem);
-        }
-
+/**
+         var pageItem = this.createDummyItem();
+         var pageItems =[];
+         for (var i=0; i<5; i++) {
+             pageItems.push(pageItem);
+         }
         // TODO-lab1B Replace all code above (in this method).
 
         // TODO Include the following line in the appropriate
         // place within your code to pass the items for the selected page
         // to the callback.
         callback(pageItems);
+**/
+        var toSkip = page * itemsPerPage;
+
+        if (category === "All"){
+            this.db.collection('item', function(err, collection) {
+                if(err) throw err;
+                collection.find({})
+                  .skip(toSkip)
+                  .limit(itemsPerPage)
+                  .toArray(function(err, result) {
+                    assert.equal(err, null);
+                    callback(result);
+
+                });
+            })
+        }else{
+            this.db.collection('item', function(err, collection) {
+                if(err) throw err;
+                collection.find( { 'category' : category})
+                    .skip(toSkip)
+                    .limit(itemsPerPage)
+                    .toArray(function(err, result) {
+                      assert.equal(err, null);
+                      callback(result);
+
+                });
+            })
+        }
+
     }
 
 
@@ -131,7 +186,29 @@ function ItemDAO(database) {
 
          // TODO Include the following line in the appropriate
          // place within your code to pass the count to the callback.
+
+/**
         callback(numItems);
+**/
+        if (category === "All"){
+            this.db.collection('item', function(err, collection) {
+                 if(err) throw err;
+                 collection.find({})
+                           .count(function(err, count){
+                             if(err) throw err;
+                             callback(count);
+                           });
+                         })
+        }else{
+            this.db.collection('item', function(err, collection) {
+                 if(err) throw err;
+                 collection.find( {'category': category })
+                           .count(function(err, count){
+                             if(err) throw err;
+                             callback(count);
+                           });
+                         })
+        }
     }
 
 
