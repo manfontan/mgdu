@@ -384,13 +384,21 @@ function ItemDAO(database) {
 
         // TODO replace the following two lines with your code that will
         // update the document with a new review.
-        var doc = this.createDummyItem();
-        doc.reviews = [reviewDoc];
+        //var doc = this.createDummyItem();
+        //doc.reviews = [reviewDoc];
 
         // TODO Include the following line in the appropriate
         // place within your code to pass the updated doc to the
         // callback.
-        callback(doc);
+        //callback(doc);
+
+        this.db.collection("item",function(err,collection){
+          if(err) throw err;
+          collection.update({"_id":itemId}, {$push: {reviews:reviewDoc}},function(err,result){
+            assert.equal(null,err);
+            callback(result);
+          });
+        });
     }
 
 

@@ -37,20 +37,39 @@ function CartDAO(database) {
         * callback function.
         *
         */
-
+        /*
         var userCart = {
             userId: userId,
             items: []
         }
         var dummyItem = this.createDummyItem();
         userCart.items.push(dummyItem);
-
+        */
         // TODO-lab5 Replace all code above (in this method).
 
         // TODO Include the following line in the appropriate
         // place within your code to pass the userCart to the
         // callback.
+        /*
         callback(userCart);
+        */
+        this.db.collection("cart",function(err,collection){
+          assert.equal(err,null);
+          collection.findOne({"userId":userId},function(err,userCart){
+            assert.equal(err,null);
+            callback(userCart);
+          });
+        });
+        /*MongoDB solution*/
+        /*
+        // This could also be implemented using a technique similar to what we did with getItem() in Lab 3.
+         this.db.collection("cart").find({userId: userId}).limit(1).next(function(err, doc) {
+             assert.equal(null, err);
+             assert.ok(doc);
+
+             callback(doc);
+         });
+        */
     }
 
 
