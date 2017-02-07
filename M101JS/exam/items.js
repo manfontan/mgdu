@@ -327,8 +327,24 @@ function ItemDAO(database) {
           collection.findOne({"_id":itemId},function(err, item){
               assert.equal(err,null);
               callback(item);
-          });          
+          });
         });
+
+        /* MongoDB solution */
+        /*
+        this.db.collection("item").find({_id: itemId}).toArray(function(err, docs) {
+          assert.equal(null, err);
+
+          var itemDoc = null;
+          if (docs.length > 0) {
+            itemDoc = docs[0];
+          }
+
+          callback(itemDoc);
+
+          });
+        };
+        */
     }
 
 
