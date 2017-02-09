@@ -8,7 +8,7 @@ p.term_years=3;
 p.limits.sms.over_rate=0.01;
 db.products.update({"_id" : ObjectId("507d95d5719dbef170f15c00")},p);
 var result = db.products.find({"_id":ObjectId("507d95d5719dbef170f15c00")},{"_id":0,term_years:1,"limits.sms.over_rate":1});
-print("After update");
+print("After Update");
 printjson(result.next());
 /* Open a terminal and retur:
 
