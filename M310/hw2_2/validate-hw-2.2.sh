@@ -5,6 +5,8 @@ primaryPort=31220
 username="admin"
 password="webscale"
 
+host=`hostname -f`
+
 usersStr="db = db.getSisterDB('admin');
           db.auth('$username', '$password');
           var users = db.system.users.find().toArray();
@@ -24,7 +26,12 @@ usersStr="db = db.getSisterDB('admin');
 function mongoEval {
   local port=$1
   local script=$2
-  echo `mongo --quiet --port $port --eval "$script"`
+  echo `mongo --quiet \
+  --ssl \
+  --sslPEMKeyFile "$HOME/shared/certs/client.pem" \
+  --sslCAFile "$HOME/shared/certs/ca.pem" \
+  $host:$port \
+  --eval "$script"`
 }
 
 function getUsers {

@@ -30,7 +30,7 @@ usersStr="db = db.getSisterDB('admin');
 function mongoEval {
   local port=$1
   local script=$2
-  echo `mongo --quiet $host:$port --eval "$script"`
+  echo `mongo --quiet --ssl --sslPEMKeyFile "$HOME/shared/certs/client.pem" --sslCAFile "$HOME/shared/certs/ca.pem" $host:$port --eval "$script"`
 }
 
 function getUsers {
