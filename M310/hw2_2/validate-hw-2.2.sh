@@ -8,28 +8,25 @@ password="webscale"
 host=`hostname -f`
 
 usersStr="db = db.getSisterDB('admin');
-          db.auth('$username', '$password');
-          var users = db.system.users.find().toArray();
-          var sortedUsers = users.map((user) => {
-            return {
-              user: user.user,
-              roles: user.roles
-            };
-          }).sort((a, b) => (a.user > b.user));
-          var numMembers = rs.status().members.length;
-          var obj = {
-            users: sortedUsers,
-            numMembers: numMembers
-          };
-          print(JSON.stringify(obj));"
+db.auth('$username', '$password');
+var users = db.system.users.find().toArray();
+var sortedUsers = users.map((user) => {
+    return {
+      user: user.user,
+      roles: user.roles
+    };
+}).sort((a, b) => (a.user > b.user));
+var numMembers = rs.status().members.length;
+var obj = {
+  users: sortedUsers,
+  numMembers: numMembers
+};
+print(JSON.stringify(obj));"
 
 function mongoEval {
   local port=$1
   local script=$2
   echo `mongo --quiet \
-  --ssl \
-  --sslPEMKeyFile "$HOME/shared/certs/client.pem" \
-  --sslCAFile "$HOME/shared/certs/ca.pem" \
   $host:$port \
   --eval "$script"`
 }
