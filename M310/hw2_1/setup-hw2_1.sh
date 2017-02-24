@@ -18,32 +18,32 @@ sysAdminUsername="sysAdmin"
 sysAdminPassword="cables"
 
 initiateStr="rs.initiate({
-                 _id: '$replSetName',
-                 members: [
-                  { _id: 1, host: '$host:${ports[0]}' },
-                  { _id: 2, host: '$host:${ports[1]}' },
-                  { _id: 3, host: '$host:${ports[2]}' }
-                 ]
-                })"
+    _id: '$replSetName',
+    members: [
+      { _id: 1, host: '$host:${ports[0]}' },
+      { _id: 2, host: '$host:${ports[1]}' },
+      { _id: 3, host: '$host:${ports[2]}' }
+    ]
+})"
 
 createUsersStr="db = db.getSiblingDB('admin');
-                db.createUser({ \
-                  user:'userAdmin', \
-                  pwd:'badges', \
-                  roles:[{role:'userAdminAnyDatabase',db:'admin'}]});
-                db.auth('$userAdminUsername','$userAdminPassword');
-                db.createUser({ \
-                  user:'sysAdmin', \
-                  pwd:'cables', \
-                  roles:[{role:'clusterManager',db:'admin'}]});
-                db.createUser({ \
-                  user:'dbAdmin', \
-                  pwd:'collections', \
-                  roles:[{role:'dbAdminAnyDatabase',db:'admin'}]});
-                db.createUser({ \
-                  user:'dataLoader', \
-                  pwd:'dumpin', \
-                  roles:[{role:'readWriteAnyDatabase',db:'admin'}]});"
+db.createUser({ \
+    user:'userAdmin', \
+    pwd:'badges', \
+roles:[{role:'userAdminAnyDatabase',db:'admin'}]});
+db.auth('$userAdminUsername','$userAdminPassword');
+db.createUser({ \
+    user:'sysAdmin', \
+    pwd:'cables', \
+roles:[{role:'clusterManager',db:'admin'}]});
+db.createUser({ \
+    user:'dbAdmin', \
+    pwd:'collections', \
+roles:[{role:'dbAdminAnyDatabase',db:'admin'}]});
+db.createUser({ \
+    user:'dataLoader', \
+    pwd:'dumpin', \
+roles:[{role:'readWriteAnyDatabase',db:'admin'}]});"
 
 
 # kill existing mongod
@@ -60,7 +60,7 @@ mkdir -p "$workingDir/"{r0,r1,r2}
 for ((i=0; i < ${#ports[@]}; i++))
 do
   mongod --auth \
-  --sslMode requireSSL \
+  --sslMode preferSSL \
   --sslPEMKeyFile "$HOME/shared/certs/server.pem" \
   --sslCAFile "$HOME/shared/certs/ca.pem" \
   --dbpath "$workingDir/r$i" \
@@ -73,19 +73,14 @@ done
 sleep 3
 
 # initiate the set
-mongo --ssl \
---sslPEMKeyFile "$HOME/shared/certs/client.pem" \
---sslCAFile "$HOME/shared/certs/ca.pem" \
---eval "$initiateStr" \
+mongo --eval "$initiateStr" \
 $host:${ports[0]}
 
 #wait for the rs to initiate
 sleep 15
 
 # create users
-mongo --quiet --ssl \
---sslPEMKeyFile "$HOME/shared/certs/client.pem" \
---sslCAFile "$HOME/shared/certs/ca.pem" \
+mongo --quiet \
 --eval "$createUsersStr" \
 $host:${ports[0]}
 
