@@ -18,13 +18,15 @@ initiateStr="rs.initiate({
       { _id: 3, host: '$host:${ports[2]}' }
     ]
 })"
+
 createUserStr="db=db.getSiblindDB('admin');
-db.createUser(user:'admin',pwd:'webscale')"
+db.createUser({user:'admin',pwd:'webscale',roles:[{role:'root',db:'admin'}]})"
+
 #cleanup existing databases
 rm -rf "$workingDir/"
 
 #cleanup existing keyfile
-rm "$HOME/shared/keyfile"
+rm -f "$HOME/shared/keyfile"
 
 #exit running mongods
 killall mongod
