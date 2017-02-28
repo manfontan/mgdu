@@ -19,7 +19,7 @@ initiateStr="rs.initiate({
     ]
 })"
 
-createUserStr="db=db.getSiblindDB('admin');
+createUserStr="db=db.getSiblingdDB('admin');
 db.createUser({user:'admin',pwd:'webscale',roles:[{role:'root',db:'admin'}]})"
 
 #cleanup existing databases
