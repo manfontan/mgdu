@@ -20,7 +20,11 @@ initiateStr="rs.initiate({
 })"
 
 createUserStr="db=db.getSiblingDB('admin');
-db.createUser({user:'admin',pwd:'webscale',roles:[{role:'root',db:'admin'}]})"
+db.createUser({
+    user:'admin',
+    pwd:'webscale',
+    roles:[{role:'root',db:'admin'}]
+})"
 
 #cleanup existing databases
 rm -rf "$workingDir/"
