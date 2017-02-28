@@ -18,8 +18,13 @@ initiateStr="rs.initiate({
       { _id: 3, host: '$host:${ports[2]}' }
     ]
 })"
+createUserStr="db=db.getSiblindDB('admin');
+db.createUser(user:'admin',pwd:'webscale')"
 #cleanup existing databases
 rm -rf "$workingDir/"
+
+#cleanup existing keyfile
+rm "$HOME/shared/keyfile"
 
 #exit running mongods
 killall mongod
@@ -30,13 +35,18 @@ sleep 15
 # create working folder
 mkdir -p "$workingDir/"{r0,r1,r2}
 
+openssl rand -base64 755 > "$HOME/shared/keyfile"
+chmod 400 keyfile
+
 # launch mongod's
 for ((i=0; i < ${#ports[@]}; i++))
 do
-  mongod --dbpath "$workingDir/r$i" \
+  mongod --auth \
+  --dbpath "$workingDir/r$i" \
   --logpath "$workingDir/r$i/$logName.log" \
   --port ${ports[$i]} \
   --replSet $replSetName \
+  --keyFile "$HOME/shared/keyfile" \
   --fork
 done
 
@@ -47,6 +57,7 @@ sleep 3
 mongo --port ${ports[0]} --eval "$initiateStr"
 
 sleep 15
+mongo --port ${ports[0]} --eval "$createUserStr"
 
 echo 'result:'
 ./validate-hw-1.2.sh
