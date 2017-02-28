@@ -19,7 +19,7 @@ initiateStr="rs.initiate({
     ]
 })"
 #cleanup existing databases
-rm -rf "$workingDir/*"
+rm -rf "$workingDir/"
 
 #exit running mongods
 killall mongod
